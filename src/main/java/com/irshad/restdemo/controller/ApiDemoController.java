@@ -22,7 +22,9 @@ public class ApiDemoController {
         log.info("Received registration request :"+ user);
 
         try {
-            return ResponseEntity.ok(restServiceImplementation.register(user));
+            String response = restServiceImplementation.register(user);
+            log.info("Response :"+ response);
+            return ResponseEntity.ok(response);
         } catch (JsonProcessingException e) {
             log.error(e.getMessage());
             return ResponseEntity.ok("Error processing request");

@@ -7,6 +7,7 @@ import com.irshad.restdemo.service.RestService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -18,18 +19,36 @@ import java.util.logging.Logger;
 
 @Service
 @Slf4j
-@AllArgsConstructor
 public class RestServiceImplementation implements RestService {
+    @Value("${restapi.regUrl}")
+    private String regUrl;
+    @Value("${restapi.loginUrl}")
+    private String loginUrl;
 
     private final RestTemplate restTemplate;
+
+    RestServiceImplementation(RestTemplate restTemplate){
+        this.restTemplate=restTemplate;
+    }
+
     @Override
     public String register(User user) throws JsonProcessingException {
-        //String body = "{}"
-        ObjectMapper objectMapper = new ObjectMapper();
-        String regUrl = "http://restapi.adequateshop.com/api/AuthAccount/Registration";
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
+        ObjectMapper objectMapper = new ObjectMapper();
+        HttpEntity<String> request = new HttpEntity<>(objectMapper.writeValueAsString(user),headers);
+
+        HttpEntity<String> response = restTemplate.exchange(regUrl, HttpMethod.POST,request,String.class);
+        return response.getBody();
+    }
+
+    @Override
+    public String login(User user) throws JsonProcessingException {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        ObjectMapper objectMapper = new ObjectMapper();
         HttpEntity<String> request = new HttpEntity<>(objectMapper.writeValueAsString(user),headers);
 
         HttpEntity<String> response = restTemplate.exchange(regUrl, HttpMethod.POST,request,String.class);

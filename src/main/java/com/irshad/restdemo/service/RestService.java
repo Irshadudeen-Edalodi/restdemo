@@ -5,4 +5,6 @@ import com.irshad.restdemo.model.User;
 
 public interface RestService {
     public String register(User user) throws JsonProcessingException;
+    public String login(User user) throws JsonProcessingException;
+
 }
